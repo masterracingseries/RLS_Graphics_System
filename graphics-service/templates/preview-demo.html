@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: #000;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Canvas 1080x1350 (portrait 4:5 Instagram) */
+  .canvas {
+    width: 1080px;
+    height: 1350px;
+    position: relative;
+    overflow: hidden;
+    background: #0a0a0a;
+    font-family: 'Barlow Condensed', sans-serif;
+    transform-origin: top center;
+    flex-shrink: 0;
+  }
+
+  /* ── FOTO PILOTO: ocupa 70% superior ── */
+  .photo-area {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 940px;
+    overflow: hidden;
+    z-index: 1;
+  }
+  .photo-area img {
+    width: 100%; height: 100%;
+    object-fit: cover; object-position: top center;
+  }
+  .photo-placeholder {
+    width: 100%; height: 100%;
+    background: #161616;
+    display: flex; align-items: flex-end; justify-content: center;
+  }
+  .photo-placeholder svg { height: 85%; width: auto; opacity: 0.1; }
+
+  /* Gradientes sobre foto */
+  .grad-photo-bottom {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 60%;
+    background: linear-gradient(to top, #0a0a0a 0%, rgba(10,10,10,0.6) 50%, transparent 100%);
+    z-index: 2;
+  }
+  .grad-photo-top {
+    position: absolute; top: 0; left: 0; right: 0; height: 160px;
+    background: linear-gradient(to bottom, rgba(5,5,5,0.7) 0%, transparent 100%);
+    z-index: 2;
+  }
+
+  /* ── BARRA IZQUIERDA ── */
+  .bar-left {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 7px; background: #c0392b; z-index: 20;
+  }
+
+  /* ── HEADER: LOGO + BANNER ── */
+  .header {
+    position: absolute; top: 0; left: 7px; right: 0;
+    z-index: 10;
+    display: flex; flex-direction: column;
+  }
+  .logo-bar {
+    padding: 22px 28px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo-img { height: 72px; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.9)); }
+  .logo-fallback {
+    background: #c0392b; color: #fff;
+    font-size: 36px; font-weight: 900; letter-spacing: 0.12em;
+    padding: 8px 20px; border-radius: 3px;
+  }
+  .header-right {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+  }
+  .league-txt { font-size: 18px; color: #ccc; letter-spacing: 0.07em; text-transform: uppercase; }
+  .division-txt { font-size: 15px; font-weight: 700; color: #c0392b; letter-spacing: 0.1em; }
+
+  /* Banner rojo "RACE RESULT" */
+  .type-banner {
+    background: #c0392b;
+    padding: 14px 28px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .type-text {
+    font-size: 36px; font-weight: 900; font-style: italic;
+    color: #fff; letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .type-line {
+    flex: 1; height: 2px; background: rgba(255,255,255,0.25);
+  }
+
+  /* ── NOMBRE PILOTO sobre la foto ── */
+  .pilot-overlay {
+    position: absolute;
+    bottom: 420px; left: 28px; right: 28px;
+    z-index: 10;
+  }
+  .pilot-name-big {
+    font-size: 88px; font-weight: 900; font-style: italic;
+    color: #fff; text-transform: uppercase; line-height: 0.9;
+    letter-spacing: 0.01em;
+    text-shadow: 0 4px 30px rgba(0,0,0,0.8);
+  }
+  .pilot-id-tag {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 22px; font-weight: 700; color: #c0392b;
+    letter-spacing: 0.18em; text-transform: uppercase;
+  }
+
+  /* ── PANEL INFERIOR ── */
+  .bottom-panel {
+    position: absolute;
+    bottom: 0; left: 7px; right: 0;
+    height: 420px;
+    background: #0a0a0a;
+    z-index: 10;
+    padding: 28px 28px 0;
+    display: flex; flex-direction: column; gap: 22px;
+  }
+
+  /* Equipo */
+  .team-row {
+    display: flex; align-items: center; gap: 14px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #1e1e1e;
+  }
+  .team-label-txt { font-size: 14px; color: #555; letter-spacing: 0.1em; flex-shrink: 0; }
+  .team-name-txt { font-size: 28px; font-weight: 700; color: #fff; letter-spacing: 0.04em; }
+  .team-dot { width: 6px; height: 6px; background: #c0392b; border-radius: 50%; flex-shrink: 0; }
+
+  /* Chips resultado */
+  .results-row { display: flex; gap: 16px; }
+  .result-chip {
+    flex: 1; border-radius: 6px;
+    padding: 20px 24px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .chip-qualifying {
+    background: #141414; border: 1px solid #222;
+  }
+  .chip-race {
+    background: #c0392b;
+  }
+  .chip-label {
+    font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase;
+    font-family: 'Barlow', sans-serif;
+  }
+  .chip-qualifying .chip-label { color: #666; }
+  .chip-race .chip-label { color: rgba(255,255,255,0.7); }
+  .chip-pos {
+    font-size: 90px; font-weight: 900; font-style: italic;
+    line-height: 0.85; letter-spacing: -2px;
+  }
+  .chip-qualifying .chip-pos { color: #fff; }
+  .chip-race .chip-pos { color: #fff; }
+
+  /* Circuit */
+  .circuit-row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .circuit-icon { font-size: 15px; color: #c0392b; }
+  .circuit-txt { font-size: 22px; color: #aaa; letter-spacing: 0.06em; }
+  .circuit-val { font-size: 22px; font-weight: 700; color: #fff; letter-spacing: 0.04em; }
+
+  /* Footer */
+  .footer-bar {
+    position: absolute; bottom: 0; left: 7px; right: 0;
+    height: 58px;
+    background: #060606;
+    border-top: 1px solid #1a1a1a;
+    z-index: 15;
+    padding: 0 28px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-copy { font-size: 14px; color: #333; letter-spacing: 0.06em; font-family: 'Barlow', sans-serif; }
+  .footer-handle { font-size: 16px; color: #c0392b; font-weight: 700; letter-spacing: 0.06em; }
+</style>
+</head>
+<body>
+<div class="canvas" id="canvas">
+
+  <!-- FOTO PILOTO -->
+  <div class="photo-area">
+    <div class="photo-placeholder">
+      <svg viewBox="0 0 300 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="150" cy="90" r="80" fill="white"/>
+        <path d="M30 700 Q25 380 150 340 Q275 380 270 700Z" fill="white"/>
+        <rect x="25" y="330" width="62" height="240" rx="28" fill="white"/>
+        <rect x="213" y="330" width="62" height="240" rx="28" fill="white"/>
+        <rect x="88" y="570" width="57" height="130" rx="26" fill="white"/>
+        <rect x="155" y="570" width="57" height="130" rx="26" fill="white"/>
+      </svg>
+    </div>
+  </div>
+  <div class="grad-photo-bottom"></div>
+  <div class="grad-photo-top"></div>
+
+  <!-- BARRA IZQUIERDA -->
+  <div class="bar-left"></div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-bar">
+      <img class="logo-img" src="../assets/logo_rls.png"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='block';" alt="RLS">
+      <div class="logo-fallback" style="display:none;">RLS</div>
+      <div class="header-right">
+        <span class="league-txt">Formula Pro League</span>
+        <span class="division-txt">División 1</span>
+      </div>
+    </div>
+    <div class="type-banner">
+      <span class="type-text">Race Result</span>
+      <div class="type-line"></div>
+    </div>
+  </div>
+
+  <!-- NOMBRE SOBRE FOTO -->
+  <div class="pilot-overlay">
+    <div class="pilot-name-big">Gastón<br>Sepúlveda</div>
+    <div class="pilot-id-tag">● RLS_IRONHUNTER</div>
+  </div>
+
+  <!-- PANEL INFERIOR -->
+  <div class="bottom-panel">
+    <div class="team-row">
+      <span class="team-label-txt">EQUIPO</span>
+      <div class="team-dot"></div>
+      <span class="team-name-txt">Ferrari</span>
+    </div>
+    <div class="results-row">
+      <div class="result-chip chip-qualifying">
+        <span class="chip-label">Qualifying</span>
+        <span class="chip-pos">P3</span>
+      </div>
+      <div class="result-chip chip-race">
+        <span class="chip-label">Race Result</span>
+        <span class="chip-pos">P1</span>
+      </div>
+    </div>
+    <div class="circuit-row">
+      <span class="circuit-icon">▶</span>
+      <span class="circuit-txt">Circuito:</span>
+      <span class="circuit-val">Monza, Italia</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-bar">
+    <span class="footer-copy">© Racing Latam Sport · All rights reserved</span>
+    <span class="footer-handle">@racinglatamsport</span>
+  </div>
+
+</div>
+
+<script>
+  function scaleCanvas() {
+    const canvas = document.getElementById('canvas');
+    const scaleX = window.innerWidth / 1080;
+    const scaleY = window.innerHeight / 1350;
+    const scale = Math.min(scaleX, scaleY) * 0.95;
+    canvas.style.transform = `scale(${scale})`;
+    canvas.style.marginTop = `${(window.innerHeight - 1350 * scale) / 2}px`;
+  }
+  scaleCanvas();
+  window.addEventListener('resize', scaleCanvas);
+</script>
+</body>
+</html>

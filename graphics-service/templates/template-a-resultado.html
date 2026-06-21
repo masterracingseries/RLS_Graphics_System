@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1080px;
+    overflow: hidden;
+    background: #080808;
+    font-family: 'Barlow Condensed', sans-serif;
+    position: relative;
+  }
+
+  /* ── FONDO ── */
+  .bg-base {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 110%, rgba(192,57,43,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 0%, rgba(192,57,43,0.08) 0%, transparent 60%),
+      #080808;
+  }
+
+  .speed-lines {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      -62deg,
+      transparent 0px, transparent 28px,
+      rgba(255,255,255,0.012) 28px, rgba(255,255,255,0.012) 29px,
+      transparent 29px, transparent 58px,
+      rgba(255,255,255,0.006) 58px, rgba(255,255,255,0.006) 59px
+    );
+  }
+
+  /* ── BARRAS DE ACENTO ── */
+  .accent-left {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 8px; background: #c0392b;
+  }
+  .accent-top {
+    position: absolute; top: 0; left: 8px; right: 0;
+    height: 4px; background: #c0392b;
+  }
+  .accent-bottom-line {
+    position: absolute; bottom: 148px; left: 8px; right: 0;
+    height: 2px; background: rgba(192,57,43,0.4);
+  }
+
+  /* ── LOGO RLS ── */
+  .logo-area {
+    position: absolute; top: 32px; right: 36px;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+    z-index: 10;
+  }
+  .logo-rls-img {
+    height: 80px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8));
+  }
+
+  /* ── NÚMERO DE POSICIÓN ── */
+  .pos-ghost {
+    position: absolute; top: 20px; left: 24px;
+    font-size: 320px; font-weight: 900; font-style: italic;
+    color: rgba(192,57,43,0.07);
+    line-height: 1; letter-spacing: -10px;
+    z-index: 1;
+    user-select: none;
+  }
+  .pos-block {
+    position: absolute; top: 36px; left: 28px;
+    z-index: 10;
+    display: flex; flex-direction: column; line-height: 1;
+  }
+  .pos-label {
+    font-size: 18px; font-weight: 700; color: #c0392b;
+    letter-spacing: 0.25em; text-transform: uppercase;
+  }
+  .pos-number {
+    font-size: 140px; font-weight: 900; font-style: italic;
+    color: #ffffff; line-height: 0.85;
+    text-shadow: 0 0 60px rgba(192,57,43,0.5);
+  }
+  .pos-suffix {
+    font-size: 22px; color: #666; letter-spacing: 0.15em;
+    margin-top: 4px;
+  }
+
+  /* ── FOTO DEL PILOTO ── */
+  .pilot-photo-wrap {
+    position: absolute;
+    bottom: 148px; left: 50%; transform: translateX(-44%);
+    width: 620px; height: 750px;
+    z-index: 5;
+    display: flex; align-items: flex-end; justify-content: center;
+  }
+  .pilot-photo {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    object-position: bottom center;
+    filter: drop-shadow(-12px 0 40px rgba(0,0,0,0.9));
+  }
+  .pilot-photo-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 12px;
+    color: #222; font-size: 20px; letter-spacing: 0.1em;
+  }
+  .pilot-photo-placeholder svg { opacity: 0.15; }
+
+  /* glow bajo el piloto */
+  .pilot-glow {
+    position: absolute; bottom: 142px; left: 50%; transform: translateX(-44%);
+    width: 500px; height: 60px;
+    background: radial-gradient(ellipse, rgba(192,57,43,0.35) 0%, transparent 70%);
+    z-index: 4;
+  }
+
+  /* ── LIGA BADGE (esquina sup derecha bajo logo) ── */
+  .league-badge {
+    position: absolute; top: 130px; right: 36px;
+    z-index: 10;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+  }
+  .league-logo {
+    height: 40px; object-fit: contain;
+    filter: brightness(0.9);
+  }
+  .league-name-text {
+    font-size: 16px; color: #888; letter-spacing: 0.08em;
+    text-transform: uppercase; text-align: right;
+  }
+  .league-div {
+    font-size: 14px; color: #c0392b; font-weight: 700;
+    letter-spacing: 0.1em; text-align: right;
+  }
+
+  /* ── FOOTER PANEL ── */
+  .footer {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 150px;
+    background: rgba(6,6,6,0.97);
+    border-top: 3px solid #c0392b;
+    z-index: 20;
+    padding: 18px 28px 18px 28px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+
+  .footer-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+
+  .pilot-info { display: flex; flex-direction: column; gap: 2px; }
+  .pilot-name {
+    font-size: 46px; font-weight: 900; font-style: italic;
+    color: #ffffff; line-height: 1; text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .pilot-id {
+    font-size: 18px; font-weight: 700; color: #c0392b;
+    letter-spacing: 0.15em; text-transform: uppercase;
+  }
+
+  .team-logo-wrap {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+  }
+  .team-name {
+    font-size: 22px; font-weight: 700; color: #fff;
+    letter-spacing: 0.05em;
+  }
+  .team-label { font-size: 13px; color: #555; letter-spacing: 0.08em; }
+
+  /* chips de datos */
+  .data-row {
+    display: flex; gap: 10px; align-items: center;
+  }
+  .chip {
+    display: flex; flex-direction: column; align-items: center;
+    background: #111; border: 1px solid #1e1e1e;
+    border-radius: 4px; padding: 5px 14px; gap: 1px;
+  }
+  .chip-val {
+    font-size: 17px; font-weight: 700; color: #fff;
+    letter-spacing: 0.04em; line-height: 1.1;
+  }
+  .chip-key {
+    font-size: 10px; color: #555; letter-spacing: 0.1em;
+    text-transform: uppercase; font-family: 'Barlow', sans-serif;
+  }
+  .chip-accent .chip-val { color: #c0392b; }
+
+  .separator {
+    width: 1px; height: 30px; background: #1e1e1e;
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-base"></div>
+<div class="speed-lines"></div>
+<div class="accent-left"></div>
+<div class="accent-top"></div>
+<div class="accent-bottom-line"></div>
+
+<!-- Número de posición fantasma -->
+<div class="pos-ghost">{{POSITION}}</div>
+
+<!-- Bloque de posición -->
+<div class="pos-block">
+  <span class="pos-label">Posición</span>
+  <span class="pos-number">{{POSITION}}</span>
+  <span class="pos-suffix">CARRERA</span>
+</div>
+
+<!-- Logo RLS -->
+<div class="logo-area">
+  <img class="logo-rls-img" src="../assets/logo_rls.png" alt="RLS Racing Latam Sport">
+</div>
+
+<!-- Liga y división -->
+<div class="league-badge">
+  <span class="league-name-text">{{LEAGUE_NAME}}</span>
+  <span class="league-div">{{DIVISION}}</span>
+</div>
+
+<!-- Foto del piloto -->
+<div class="pilot-photo-wrap">
+  {{#if PILOT_PHOTO}}
+  <img class="pilot-photo" src="{{PILOT_PHOTO}}" alt="{{PILOT_NAME}}">
+  {{else}}
+  <div class="pilot-photo-placeholder">
+    <svg width="120" height="160" viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="60" cy="38" r="32" fill="#333"/>
+      <path d="M10 140 Q10 95 60 95 Q110 95 110 140" fill="#333"/>
+    </svg>
+    <span style="color:#2a2a2a; font-size:16px; letter-spacing:0.1em;">FOTO PILOTO</span>
+  </div>
+  {{/if}}
+</div>
+<div class="pilot-glow"></div>
+
+<!-- Footer -->
+<div class="footer">
+  <div class="footer-top">
+    <div class="pilot-info">
+      <div class="pilot-name">{{PILOT_NAME}}</div>
+      <div class="pilot-id">● {{PILOT_ID}}</div>
+    </div>
+    <div class="team-logo-wrap">
+      <div class="team-label">EQUIPO</div>
+      <div class="team-name">{{TEAM}}</div>
+    </div>
+  </div>
+  <div class="data-row">
+    <div class="chip">
+      <span class="chip-val">{{CIRCUIT}}</span>
+      <span class="chip-key">Circuito</span>
+    </div>
+    <div class="separator"></div>
+    <div class="chip chip-accent">
+      <span class="chip-val">{{POINTS}} pts</span>
+      <span class="chip-key">Puntos</span>
+    </div>
+    <div class="separator"></div>
+    <div class="chip">
+      <span class="chip-val">{{GAME}}</span>
+      <span class="chip-key">Juego</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

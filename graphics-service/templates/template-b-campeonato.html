@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1080px;
+    overflow: hidden;
+    background: #050505;
+    font-family: 'Barlow Condensed', sans-serif;
+    position: relative;
+  }
+
+  /* ── FONDO ÉPICO ── */
+  .bg-base {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 90% 70% at 50% 115%, rgba(212,160,23,0.22) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 40% at 90% 5%, rgba(212,160,23,0.1) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 30% at 10% 5%, rgba(192,57,43,0.08) 0%, transparent 50%),
+      #050505;
+  }
+
+  /* rayos diagonales tipo "victoria" */
+  .burst {
+    position: absolute; inset: 0;
+    background: repeating-conic-gradient(
+      from 0deg at 50% 108%,
+      rgba(212,160,23,0.04) 0deg 6deg,
+      transparent 6deg 12deg
+    );
+  }
+
+  .speed-lines {
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      -62deg,
+      transparent 0px, transparent 28px,
+      rgba(255,255,255,0.008) 28px, rgba(255,255,255,0.008) 29px
+    );
+  }
+
+  /* ── BARRAS DORADAS ── */
+  .accent-left {
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 8px;
+    background: linear-gradient(to bottom, #d4a017 0%, #f0c040 40%, #d4a017 70%, #8a6010 100%);
+  }
+  .accent-top {
+    position: absolute; top: 0; left: 8px; right: 0;
+    height: 4px;
+    background: linear-gradient(to right, #d4a017, #f0c040 30%, #d4a017);
+  }
+
+  /* ── BANNER CAMPEÓN ── */
+  .champ-banner {
+    position: absolute; top: 0; left: 8px; right: 0;
+    height: 52px;
+    background: linear-gradient(90deg, #d4a017 0%, #f0c040 30%, #d4a017 60%, #b8860b 100%);
+    display: flex; align-items: center; justify-content: center;
+    gap: 20px; z-index: 15;
+  }
+  .champ-banner-text {
+    font-size: 22px; font-weight: 900; font-style: italic;
+    color: #1a0d00; letter-spacing: 0.25em; text-transform: uppercase;
+  }
+  .star { font-size: 20px; color: #1a0d00; }
+
+  /* ── LOGO RLS ── */
+  .logo-area {
+    position: absolute; top: 70px; right: 36px;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+    z-index: 10;
+  }
+  .logo-rls-img {
+    height: 80px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 12px rgba(212,160,23,0.4));
+  }
+
+  /* ── POSICIÓN / TÍTULO ── */
+  .pos-ghost {
+    position: absolute; top: 60px; left: 24px;
+    font-size: 300px; font-weight: 900; font-style: italic;
+    color: rgba(212,160,23,0.05);
+    line-height: 1; letter-spacing: -10px;
+    z-index: 1;
+    user-select: none;
+  }
+  .pos-block {
+    position: absolute; top: 72px; left: 28px;
+    z-index: 10;
+    display: flex; flex-direction: column; line-height: 1;
+  }
+  .pos-label {
+    font-size: 18px; font-weight: 700; color: #d4a017;
+    letter-spacing: 0.25em; text-transform: uppercase;
+  }
+  .pos-number {
+    font-size: 140px; font-weight: 900; font-style: italic;
+    color: #ffffff; line-height: 0.85;
+    text-shadow: 0 0 80px rgba(212,160,23,0.6), 0 0 160px rgba(212,160,23,0.2);
+  }
+  .pos-suffix {
+    font-size: 22px; color: #666; letter-spacing: 0.15em;
+    margin-top: 4px;
+  }
+  .pos-context {
+    font-size: 17px; color: #d4a017; font-weight: 700;
+    letter-spacing: 0.1em; margin-top: 6px;
+    text-transform: uppercase;
+  }
+
+  /* ── FOTO DEL PILOTO ── */
+  .pilot-photo-wrap {
+    position: absolute;
+    bottom: 160px; left: 50%; transform: translateX(-44%);
+    width: 640px; height: 770px;
+    z-index: 5;
+    display: flex; align-items: flex-end; justify-content: center;
+  }
+  .pilot-photo {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    object-position: bottom center;
+    filter: drop-shadow(-8px 0 50px rgba(0,0,0,0.95)) drop-shadow(0 0 30px rgba(212,160,23,0.15));
+  }
+  .pilot-photo-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 12px;
+    color: #222;
+  }
+
+  /* glow dorado bajo el piloto */
+  .pilot-glow {
+    position: absolute; bottom: 154px; left: 50%; transform: translateX(-44%);
+    width: 560px; height: 80px;
+    background: radial-gradient(ellipse, rgba(212,160,23,0.4) 0%, transparent 70%);
+    z-index: 4;
+  }
+  /* partículas doradas decorativas */
+  .particle {
+    position: absolute; border-radius: 50%;
+    background: #d4a017; opacity: 0.6; z-index: 6;
+  }
+
+  /* ── LIGA ── */
+  .league-badge {
+    position: absolute; top: 168px; right: 36px;
+    z-index: 10;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 6px;
+  }
+  .league-name-text {
+    font-size: 16px; color: #888; letter-spacing: 0.08em;
+    text-transform: uppercase; text-align: right;
+  }
+  .league-div {
+    font-size: 14px; color: #d4a017; font-weight: 700;
+    letter-spacing: 0.1em; text-align: right;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 162px;
+    background: rgba(4,4,4,0.98);
+    border-top: 3px solid #d4a017;
+    z-index: 20;
+    padding: 18px 28px 18px 28px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .footer-top {
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .pilot-info { display: flex; flex-direction: column; gap: 2px; }
+  .pilot-name {
+    font-size: 46px; font-weight: 900; font-style: italic;
+    color: #ffffff; line-height: 1; text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+  .pilot-id {
+    font-size: 18px; font-weight: 700; color: #d4a017;
+    letter-spacing: 0.15em; text-transform: uppercase;
+  }
+  .team-logo-wrap {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+  }
+  .team-name { font-size: 22px; font-weight: 700; color: #fff; letter-spacing: 0.05em; }
+  .team-label { font-size: 13px; color: #555; letter-spacing: 0.08em; }
+
+  .data-row { display: flex; gap: 10px; align-items: center; }
+  .chip {
+    display: flex; flex-direction: column; align-items: center;
+    background: #0d0d00; border: 1px solid #2a2000;
+    border-radius: 4px; padding: 5px 14px; gap: 1px;
+  }
+  .chip-val { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: 0.04em; line-height: 1.1; }
+  .chip-key { font-size: 10px; color: #555; letter-spacing: 0.1em; text-transform: uppercase; font-family: 'Barlow', sans-serif; }
+  .chip-gold .chip-val { color: #d4a017; }
+  .separator { width: 1px; height: 30px; background: #2a2000; }
+</style>
+</head>
+<body>
+
+<div class="bg-base"></div>
+<div class="burst"></div>
+<div class="speed-lines"></div>
+<div class="accent-left"></div>
+<div class="accent-top"></div>
+
+<!-- Banner campeón -->
+<div class="champ-banner">
+  <span class="star">★</span>
+  <span class="champ-banner-text">{{CHAMP_TITLE}}</span>
+  <span class="star">★</span>
+</div>
+
+<!-- Número fantasma -->
+<div class="pos-ghost">{{POSITION}}</div>
+
+<!-- Bloque posición -->
+<div class="pos-block">
+  <span class="pos-label">{{CHAMP_LABEL}}</span>
+  <span class="pos-number">{{POSITION}}</span>
+  <span class="pos-suffix">TEMPORADA</span>
+  <span class="pos-context">{{LEAGUE_NAME}}</span>
+</div>
+
+<!-- Logo RLS -->
+<div class="logo-area">
+  <img class="logo-rls-img" src="../assets/logo_rls.png" alt="RLS Racing Latam Sport">
+</div>
+
+<!-- Liga y división -->
+<div class="league-badge">
+  <span class="league-name-text">{{DIVISION}}</span>
+  <span class="league-div">{{SEASON}}</span>
+</div>
+
+<!-- Partículas decorativas -->
+<div class="particle" style="width:6px;height:6px;top:220px;left:420px;"></div>
+<div class="particle" style="width:4px;height:4px;top:300px;left:680px;opacity:0.3;"></div>
+<div class="particle" style="width:8px;height:8px;top:180px;left:560px;opacity:0.4;"></div>
+<div class="particle" style="width:3px;height:3px;top:400px;left:350px;opacity:0.5;"></div>
+
+<!-- Foto piloto -->
+<div class="pilot-photo-wrap">
+  {{#if PILOT_PHOTO}}
+  <img class="pilot-photo" src="{{PILOT_PHOTO}}" alt="{{PILOT_NAME}}">
+  {{else}}
+  <div class="pilot-photo-placeholder">
+    <svg width="120" height="160" viewBox="0 0 120 160" fill="none">
+      <circle cx="60" cy="38" r="32" fill="#2a2a2a"/>
+      <path d="M10 140 Q10 95 60 95 Q110 95 110 140" fill="#2a2a2a"/>
+    </svg>
+  </div>
+  {{/if}}
+</div>
+<div class="pilot-glow"></div>
+
+<!-- Footer -->
+<div class="footer">
+  <div class="footer-top">
+    <div class="pilot-info">
+      <div class="pilot-name">{{PILOT_NAME}}</div>
+      <div class="pilot-id">★ {{PILOT_ID}}</div>
+    </div>
+    <div class="team-logo-wrap">
+      <div class="team-label">EQUIPO</div>
+      <div class="team-name">{{TEAM}}</div>
+    </div>
+  </div>
+  <div class="data-row">
+    <div class="chip chip-gold">
+      <span class="chip-val">{{TOTAL_POINTS}} pts</span>
+      <span class="chip-key">Total temporada</span>
+    </div>
+    <div class="separator"></div>
+    <div class="chip">
+      <span class="chip-val">{{WINS}} victorias</span>
+      <span class="chip-key">Carreras ganadas</span>
+    </div>
+    <div class="separator"></div>
+    <div class="chip">
+      <span class="chip-val">{{GAME}}</span>
+      <span class="chip-key">Juego</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
