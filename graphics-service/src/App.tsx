@@ -32,36 +32,37 @@ const FONDOS_PATH = `${GITHUB_BASE}/fondos_f1`;
 interface Circuit {
   id: string;
   name: string;
+  city: string;
   country: string;
   background: string;
 }
 
 const F1_CIRCUITS: Circuit[] = [
-  { id: 'bahrain',      name: 'Sakhir',       country: 'Bahréin',        background: `${FONDOS_PATH}/bahrain.jpg` },
-  { id: 'jeddah',      name: 'Jeddah',        country: 'Arabia Saudita', background: `${FONDOS_PATH}/jeddah.jpg` },
-  { id: 'melbourne',   name: 'Melbourne',     country: 'Australia',      background: `${FONDOS_PATH}/melbourne.jpg` },
-  { id: 'suzuka',      name: 'Suzuka',        country: 'Japón',          background: `${FONDOS_PATH}/suzuka.jpg` },
-  { id: 'shanghai',    name: 'Shanghai',      country: 'China',          background: `${FONDOS_PATH}/shanghai.jpg` },
-  { id: 'miami',       name: 'Miami',         country: 'Estados Unidos', background: `${FONDOS_PATH}/miami.jpg` },
-  { id: 'imola',       name: 'Imola',         country: 'Italia',         background: `${FONDOS_PATH}/imola.jpg` },
-  { id: 'monaco',      name: 'Mónaco',        country: 'Mónaco',         background: `${FONDOS_PATH}/monaco.jpg` },
-  { id: 'barcelona',   name: 'Barcelona',     country: 'España',         background: `${FONDOS_PATH}/barcelona.jpg` },
-  { id: 'montreal',    name: 'Montreal',      country: 'Canadá',         background: `${FONDOS_PATH}/montreal.jpg` },
-  { id: 'spielberg',   name: 'Red Bull Ring', country: 'Austria',        background: `${FONDOS_PATH}/spielberg.jpg` },
-  { id: 'silverstone', name: 'Silverstone',   country: 'Gran Bretaña',   background: `${FONDOS_PATH}/silverstone.jpg` },
-  { id: 'spa',         name: 'Spa',           country: 'Bélgica',        background: `${FONDOS_PATH}/spa_fondo.jpg` },
-  { id: 'budapest',    name: 'Budapest',      country: 'Hungría',        background: `${FONDOS_PATH}/budapest.jpg` },
-  { id: 'zandvoort',   name: 'Zandvoort',     country: 'Países Bajos',   background: `${FONDOS_PATH}/zandvoort.jpg` },
-  { id: 'monza',       name: 'Monza',         country: 'Italia',         background: `${FONDOS_PATH}/monza.jpg` },
-  { id: 'baku',        name: 'Baku',          country: 'Azerbaiyán',     background: `${FONDOS_PATH}/baku.jpg` },
-  { id: 'singapore',   name: 'Singapur',      country: 'Singapur',       background: `${FONDOS_PATH}/singapore.jpg` },
-  { id: 'austin',      name: 'Austin (COTA)', country: 'Estados Unidos', background: `${FONDOS_PATH}/austin.jpg` },
-  { id: 'mexico',      name: 'Ciudad de México', country: 'México',      background: `${FONDOS_PATH}/mexico.jpg` },
-  { id: 'saopaulo',    name: 'São Paulo',     country: 'Brasil',         background: `${FONDOS_PATH}/saopaulo.jpg` },
-  { id: 'lasvegas',    name: 'Las Vegas',     country: 'Estados Unidos', background: `${FONDOS_PATH}/lasvegas.jpg` },
-  { id: 'lusail',      name: 'Lusail',        country: 'Qatar',          background: `${FONDOS_PATH}/lusail.jpg` },
-  { id: 'abudhabi',    name: 'Yas Marina',    country: 'Abu Dabi',       background: `${FONDOS_PATH}/abudhabi.jpg` },
-  { id: 'madrid',      name: 'IFEMA Madrid',  country: 'España',         background: `${FONDOS_PATH}/madrid.jpg` },
+  { id: 'bahrain',      name: 'Sakhir',          city: 'Sakhir',      country: 'Bahréin',        background: `${FONDOS_PATH}/bahrain.jpg` },
+  { id: 'jeddah',      name: 'Jeddah',           city: 'Jeddah',      country: 'Arabia Saudita', background: `${FONDOS_PATH}/jeddah.jpg` },
+  { id: 'melbourne',   name: 'Melbourne',        city: 'Melbourne',   country: 'Australia',      background: `${FONDOS_PATH}/melbourne.jpg` },
+  { id: 'suzuka',      name: 'Suzuka',           city: 'Suzuka',      country: 'Japón',          background: `${FONDOS_PATH}/suzuka.jpg` },
+  { id: 'shanghai',    name: 'Shanghai',         city: 'Shanghai',    country: 'China',          background: `${FONDOS_PATH}/shanghai.jpg` },
+  { id: 'miami',       name: 'Miami',            city: 'Miami',       country: 'Estados Unidos', background: `${FONDOS_PATH}/miami.jpg` },
+  { id: 'imola',       name: 'Imola',            city: 'Imola',       country: 'Italia',         background: `${FONDOS_PATH}/imola.jpg` },
+  { id: 'monaco',      name: 'Mónaco',           city: 'Mónaco',      country: 'Mónaco',         background: `${FONDOS_PATH}/monaco.jpg` },
+  { id: 'barcelona',   name: 'Barcelona',        city: 'Barcelona',   country: 'España',         background: `${FONDOS_PATH}/barcelona.jpg` },
+  { id: 'montreal',    name: 'Montreal',         city: 'Montreal',    country: 'Canadá',         background: `${FONDOS_PATH}/montreal.jpg` },
+  { id: 'spielberg',   name: 'Red Bull Ring',    city: 'Spielberg',   country: 'Austria',        background: `${FONDOS_PATH}/spielberg.jpg` },
+  { id: 'silverstone', name: 'Silverstone',      city: 'Silverstone', country: 'Gran Bretaña',   background: `${FONDOS_PATH}/silverstone.jpg` },
+  { id: 'spa',         name: 'Spa',              city: 'Spa',         country: 'Bélgica',        background: `${FONDOS_PATH}/spa_fondo.jpg` },
+  { id: 'budapest',    name: 'Budapest',         city: 'Budapest',    country: 'Hungría',        background: `${FONDOS_PATH}/budapest.jpg` },
+  { id: 'zandvoort',   name: 'Zandvoort',        city: 'Zandvoort',   country: 'Países Bajos',   background: `${FONDOS_PATH}/zandvoort.jpg` },
+  { id: 'monza',       name: 'Monza',            city: 'Monza',       country: 'Italia',         background: `${FONDOS_PATH}/monza.jpg` },
+  { id: 'baku',        name: 'Baku',             city: 'Bakú',        country: 'Azerbaiyán',     background: `${FONDOS_PATH}/baku.jpg` },
+  { id: 'singapore',   name: 'Singapur',         city: 'Singapur',    country: 'Singapur',       background: `${FONDOS_PATH}/singapore.jpg` },
+  { id: 'austin',      name: 'Austin (COTA)',    city: 'Austin',      country: 'Estados Unidos', background: `${FONDOS_PATH}/austin.jpg` },
+  { id: 'mexico',      name: 'Ciudad de México', city: 'México',      country: 'México',         background: `${FONDOS_PATH}/mexico.jpg` },
+  { id: 'saopaulo',    name: 'São Paulo',        city: 'São Paulo',   country: 'Brasil',         background: `${FONDOS_PATH}/saopaulo.jpg` },
+  { id: 'lasvegas',    name: 'Las Vegas',        city: 'Las Vegas',   country: 'Estados Unidos', background: `${FONDOS_PATH}/lasvegas.jpg` },
+  { id: 'lusail',      name: 'Lusail',           city: 'Lusail',      country: 'Qatar',          background: `${FONDOS_PATH}/lusail.jpg` },
+  { id: 'abudhabi',    name: 'Yas Marina',       city: 'Abu Dabi',    country: 'Abu Dabi',       background: `${FONDOS_PATH}/abudhabi.jpg` },
+  { id: 'madrid',      name: 'IFEMA Madrid',     city: 'Madrid',      country: 'España',         background: `${FONDOS_PATH}/madrid.jpg` },
 ];
 
 const getBase64FromUrl = async (url: string): Promise<string> => {
@@ -287,6 +288,8 @@ const F1_TEAMS: Team[] = [
   },
 ];
 
+type TemplateId = 'protagonista' | 'broadcast' | 'card';
+
 interface PilotData {
   league: string;
   division: string;
@@ -299,6 +302,7 @@ interface PilotData {
   instagram: string;
   image: string | null;
   background: string;
+  templateId: TemplateId;
 }
 
 const INITIAL_DATA: PilotData = {
@@ -313,9 +317,189 @@ const INITIAL_DATA: PilotData = {
   instagram: '',
   image: null,
   background: F1_CIRCUITS.find(c => c.id === 'spa')?.background || `${FONDOS_PATH}/spa_fondo.jpg`,
+  templateId: 'protagonista',
 };
 
-export default function App() {
+// ── Helpers compartidos por los templates ──
+const BG_FALLBACK = 'https://images.unsplash.com/photo-1533130061792-64b345e4a833?q=80&w=2070&auto=format&fit=crop';
+
+const handleBgError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+  const target = e.target as HTMLImageElement;
+  if (target.src !== BG_FALLBACK) target.src = BG_FALLBACK;
+};
+
+interface TemplateProps {
+  data: PilotData;
+  team: Team;
+  circuit?: Circuit;
+}
+
+// ════════ TEMPLATE 2: BROADCAST (estética TV F1) ════════
+function BroadcastTemplate({ data, team, circuit }: TemplateProps) {
+  const color = team.color;
+  const longName = (data.nickname || 'PILOTO').length > 12;
+  return (
+    <div className="absolute inset-0 overflow-hidden" style={{ fontFamily: "'Inter', sans-serif", backgroundColor: '#08080d' }}>
+      {/* Fondo circuito (más visible) */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={getExportUrl(data.background)} alt="" className="w-full h-full object-cover opacity-55 contrast-110"
+          referrerPolicy="no-referrer" crossOrigin={getCrossOrigin(getExportUrl(data.background))} onError={handleBgError}
+        />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, #08080d 6%, transparent 50%), linear-gradient(to right, rgba(8,8,13,0.8) 0%, transparent 45%, transparent 70%, rgba(8,8,13,0.5) 100%)' }} />
+      </div>
+
+      {/* Barra lateral color equipo */}
+      <div className="absolute left-0 top-0 bottom-0 w-[8px] z-40" style={{ backgroundColor: color }} />
+
+      {/* Foto piloto centrada y grande */}
+      <div className="absolute inset-x-0 top-[7%] bottom-[76px] z-[5] flex items-end justify-center">
+        {data.image ? (
+          <div className="relative h-full w-[82%] flex items-end justify-center">
+            <img src={getExportUrl(data.image)} alt="Pilot" className="h-full w-full object-contain object-bottom"
+              referrerPolicy="no-referrer" crossOrigin={getCrossOrigin(getExportUrl(data.image))} />
+            <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to bottom, transparent 78%, #08080d 99%)' }} />
+          </div>
+        ) : (
+          <User className="w-12 h-12 text-white/10 mb-10" />
+        )}
+      </div>
+
+      {/* Logo RLS grande y protagonista */}
+      <img src={getExportUrl(RLS_LOGO_URL)} alt="RLS" className="absolute top-2 right-3 h-20 object-contain z-30 drop-shadow-[0_2px_10px_rgba(0,0,0,1)]"
+        referrerPolicy="no-referrer" crossOrigin={getCrossOrigin(getExportUrl(RLS_LOGO_URL))} />
+
+      {/* Etiqueta superior + liga */}
+      <div className="absolute top-4 left-5 z-30">
+        <div className="text-[11px] tracking-[0.25em] text-white/80 uppercase" style={{ fontFamily: "'Courier New', monospace", textShadow: '0 1px 6px rgba(0,0,0,0.9)' }}>Race Result · {circuit?.name || ''}</div>
+        <div className="text-[12px] font-black tracking-[0.15em] uppercase mt-1" style={{ color, textShadow: '0 1px 6px rgba(0,0,0,0.9)' }}>{data.league}</div>
+      </div>
+
+      {/* Auto reducido bajo la liga */}
+      <div className="absolute top-[54px] left-4 w-[150px] h-9 z-20 pointer-events-none">
+        <img src={getExportUrl(team.car)} alt="" className="w-full h-full object-contain drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]"
+          referrerPolicy="no-referrer" crossOrigin={getCrossOrigin(getExportUrl(team.car))} />
+      </div>
+
+      {/* Torre de tiempos (resultado) a la izquierda */}
+      <div className="absolute top-[100px] left-3 z-30 flex flex-col gap-2" style={{ fontFamily: "'Courier New', monospace" }}>
+        <div className="px-3 py-1.5" style={{ backgroundColor: 'rgba(8,8,13,0.74)', borderLeft: `3px solid ${color}` }}>
+          <div className="text-[10px] tracking-[0.3em] uppercase font-bold" style={{ color }}>Finish</div>
+          <div className="text-white font-black leading-[0.85]" style={{ fontSize: '62px' }}>{data.race}</div>
+        </div>
+        <div className="px-3 py-1 self-start" style={{ backgroundColor: 'rgba(8,8,13,0.62)', borderLeft: '3px solid rgba(255,255,255,0.3)' }}>
+          <div className="text-[10px] tracking-[0.3em] uppercase text-white/50">Qualifying</div>
+          <div className="text-white font-black leading-none" style={{ fontSize: '26px' }}>{data.qualifying}</div>
+        </div>
+      </div>
+
+      {/* Barra inferior tipo timing */}
+      <div className="absolute bottom-0 left-0 w-full z-30 px-4 py-2.5 pl-5" style={{ backgroundColor: '#101019', borderTop: `2px solid ${color}` }}>
+        <div className="flex items-center justify-between gap-2">
+          <div className="min-w-0">
+            <div className={`text-white font-black italic uppercase tracking-tight leading-none truncate ${longName ? 'text-base' : 'text-xl'}`}>{data.nickname || 'PILOTO'}</div>
+            <div className="text-[10px] text-white/40 uppercase tracking-widest mt-0.5 truncate">{data.realName} · {data.division}</div>
+          </div>
+          <span className="text-[11px] font-bold uppercase tracking-widest text-white/60 flex-shrink-0 text-right">{team.name}</span>
+        </div>
+        <div className="flex items-center justify-between mt-1.5 pt-1.5" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+          <span className="text-[9px] tracking-widest uppercase text-white/30">© Racing Latam Sport</span>
+          <span className="text-[10px] font-black italic tracking-wider" style={{ color }}>@racinglatamsport</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ════════ TEMPLATE 3: CARD COLECCIONABLE (estilo FUT) ════════
+function CardTemplate({ data, team, circuit }: TemplateProps) {
+  const color = team.color;
+  const textOnColor = color === '#ffffff' ? '#000000' : '#ffffff';
+  const longName = (data.nickname || 'PILOTO').length > 13;
+  const attrs: [string, string][] = [
+    ['Quali', data.qualifying],
+    ['Race', data.race],
+    ['Pista', circuit?.city || '—'],
+    ['Div', data.division.replace(/divisi[oó]n/i, '').trim() || data.division],
+  ];
+  return (
+    <div className="absolute inset-0 overflow-hidden" style={{ fontFamily: "'Inter', sans-serif", backgroundColor: '#0e0e16', border: `3px solid ${color}` }}>
+      {/* Fondo circuito tenue + tinte equipo */}
+      <div className="absolute inset-0 z-0">
+        <img src={getExportUrl(data.background)} alt="" className="w-full h-full object-cover opacity-25 contrast-125"
+          referrerPolicy="no-referrer" crossOrigin={getCrossOrigin(getExportUrl(data.background))} onError={handleBgError} />
+        <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, ${color}33, transparent 35%, #0e0e16 86%)` }} />
+      </div>
+
+      {/* Auto como identidad de equipo, detrás del nombre de la liga */}
+      <div className="absolute left-1/2 -translate-x-1/2 w-[98%] h-16 z-[1] opacity-35 pointer-events-none" style={{ top: '67%' }}>
+        <img src={getExportUrl(team.car)} alt="" className="w-full h-full object-contain"
+          referrerPolicy="no-referrer" crossOrigin={getCrossOrigin(getExportUrl(team.car))} />
+      </div>
+
+      {/* Foto piloto grande protagonista */}
+      <div className="absolute inset-x-0 top-[42px] z-[10] flex justify-center" style={{ height: '54%' }}>
+        {data.image ? (
+          <div className="relative h-full w-[90%] flex items-end justify-center">
+            <img src={getExportUrl(data.image)} alt="Pilot" className="h-full w-full object-contain object-bottom"
+              referrerPolicy="no-referrer" crossOrigin={getCrossOrigin(getExportUrl(data.image))} />
+            <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(to bottom, transparent 76%, #0e0e16 99%)' }} />
+          </div>
+        ) : (
+          <div className="h-full flex items-center"><User className="w-12 h-12 text-white/10" /></div>
+        )}
+      </div>
+
+      {/* Resultado tipo rating (arriba izquierda) */}
+      <div className="absolute top-3 left-4 z-30 text-center leading-none">
+        <div className="text-white font-black italic" style={{ fontSize: '50px', lineHeight: 0.85, textShadow: '0 2px 12px rgba(0,0,0,0.95)' }}>{data.race}</div>
+        <div className="text-[11px] font-black tracking-[0.2em] uppercase mt-0.5" style={{ color }}>Pos</div>
+      </div>
+
+      {/* Logo RLS grande (arriba derecha) */}
+      <img src={getExportUrl(RLS_LOGO_URL)} alt="RLS" className="absolute top-3 right-4 h-[68px] object-contain z-30 drop-shadow-[0_2px_10px_rgba(0,0,0,1)]"
+        referrerPolicy="no-referrer" crossOrigin={getCrossOrigin(getExportUrl(RLS_LOGO_URL))} />
+
+      {/* Título RACE RESULT */}
+      <div className="absolute top-2 left-1/2 -translate-x-1/2 z-30 pointer-events-none transform -skew-x-12 px-3 py-0.5" style={{ backgroundColor: color }}>
+        <span className="block transform skew-x-12 text-[11px] font-black uppercase tracking-[0.2em] italic whitespace-nowrap" style={{ color: textOnColor }}>Race Result</span>
+      </div>
+
+      {/* Banner nickname + liga destacada */}
+      <div className="absolute left-0 w-full z-20" style={{ top: '57%' }}>
+        <div className="w-full py-1.5 text-center" style={{ backgroundColor: color, transform: 'skewY(-3deg)' }}>
+          <div className="inline-block" style={{ transform: 'skewY(3deg)' }}>
+            <span className={`font-black italic uppercase tracking-tight ${longName ? 'text-lg' : 'text-2xl'}`} style={{ color: textOnColor }}>{data.nickname || 'PILOTO'}</span>
+          </div>
+        </div>
+        <div className="text-center text-[10px] text-white/50 uppercase tracking-[0.2em] mt-1.5">{data.realName}</div>
+        <div className="text-center text-[13px] font-black uppercase tracking-[0.15em] mt-0.5 text-white">{data.league}</div>
+      </div>
+
+      {/* Atributos */}
+      <div className="absolute bottom-7 left-4 right-4 z-20 grid grid-cols-2 gap-x-5 gap-y-1.5">
+        {attrs.map(([label, value]) => (
+          <div key={label} className="flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+            <span className="text-[11px] uppercase tracking-widest text-white/45">{label}</span>
+            <span className="text-[11px] font-black uppercase text-white truncate ml-2">{value}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Footer */}
+      <div className="absolute bottom-2 left-0 w-full flex items-center justify-center z-20">
+        <span className="text-[10px] font-black italic tracking-wider" style={{ color }}>@racinglatamsport</span>
+      </div>
+    </div>
+  );
+}
+
+interface AppProps {
+  onSwitchToAdmin?: () => void;
+  onLogout?: () => void;
+}
+
+export default function App({ onSwitchToAdmin, onLogout }: AppProps = {}) {
   const [data, setData] = useState<PilotData>(INITIAL_DATA);
   const [isGenerating, setIsGenerating] = useState(false);
   const [downloadError, setDownloadError] = useState<string | null>(null);
@@ -443,7 +627,10 @@ export default function App() {
 
       const response = await fetch('/api/submit-graphic', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('rls_token') || ''}`,
+        },
         body: JSON.stringify({
           imageBase64: generatedImageUrl,
           pilotData: {
@@ -456,6 +643,7 @@ export default function App() {
             circuitName: selectedCircuit ? `${selectedCircuit.name}, ${selectedCircuit.country}` : 'N/A',
             qualifying: data.qualifying,
             race: data.race,
+            template: data.templateId,
           }
         })
       });
@@ -512,6 +700,28 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-red-600 selection:text-white pb-20">
+      {/* Admin / Logout buttons */}
+      {(onSwitchToAdmin || onLogout) && (
+        <div className="fixed top-3 right-3 z-50 flex gap-2">
+          {onSwitchToAdmin && (
+            <button
+              onClick={onSwitchToAdmin}
+              className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/50 text-xs font-bold uppercase tracking-widest hover:bg-white/10 hover:text-white transition-all"
+            >
+              Panel Admin
+            </button>
+          )}
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-white/50 text-xs font-bold uppercase tracking-widest hover:bg-white/10 hover:text-white transition-all"
+            >
+              Salir
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Success Toast */}
       <AnimatePresence>
         {submitSuccess && (
@@ -549,7 +759,7 @@ export default function App() {
               <span className="font-black italic text-2xl tracking-tighter">RLS</span>
             </div>
             <h3 className="text-sm font-black uppercase tracking-[0.4em] text-white/40 italic">Vista Previa</h3>
-            <span className="text-[10px] text-white/20 font-mono mt-1">v1.5.0</span>
+            <span className="text-[10px] text-white/20 font-mono mt-1">v1.7.0</span>
           </div>
           
           {/* Responsive Scaling Wrapper */}
@@ -568,12 +778,14 @@ export default function App() {
                 className="relative w-[360px] h-[450px] bg-[#050505] overflow-hidden shadow-2xl shadow-red-600/40 border border-white/10 flex-shrink-0"
                 style={{ fontFamily: "'Inter', sans-serif" }}
               >
+                {data.templateId === 'protagonista' && (
+                <>
                 {/* Background Image - User Provided F1 Wallpaper */}
                 <div className="absolute inset-0 z-0">
-                  <img 
-                    src={getExportUrl(data.background)} 
-                    alt="F1 Wallpaper" 
-                    className="w-full h-full object-cover opacity-80 contrast-125"
+                  <img
+                    src={getExportUrl(data.background)}
+                    alt="F1 Wallpaper"
+                    className="w-full h-full object-cover opacity-90 contrast-125"
                     referrerPolicy="no-referrer"
                     crossOrigin={getCrossOrigin(getExportUrl(data.background))}
                     onError={(e) => {
@@ -584,7 +796,7 @@ export default function App() {
                       }
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black" />
                   <div className="absolute inset-0 bg-red-900/5 mix-blend-overlay" />
                 </div>
                 
@@ -734,7 +946,41 @@ export default function App() {
                 {/* Decorative Elements */}
                 <div className="absolute top-1/2 -left-4 w-8 h-32 bg-red-600/10 blur-xl rounded-full transform -translate-y-1/2" />
                 <div className="absolute bottom-20 -right-4 w-12 h-36 bg-red-600/5 blur-2xl rounded-full" />
+                </>
+                )}
+
+                {data.templateId === 'broadcast' && (
+                  <BroadcastTemplate data={data} team={selectedTeam} circuit={selectedCircuit} />
+                )}
+                {data.templateId === 'card' && (
+                  <CardTemplate data={data} team={selectedTeam} circuit={selectedCircuit} />
+                )}
               </div>
+            </div>
+          </div>
+
+          {/* Template Selector */}
+          <div className="w-full max-w-[360px]">
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 text-center mb-3">Elegí tu estilo</p>
+            <div className="grid grid-cols-3 gap-2">
+              {([
+                { id: 'protagonista', label: 'Protagonista', icon: User },
+                { id: 'broadcast', label: 'Broadcast', icon: Layout },
+                { id: 'card', label: 'Card', icon: Trophy },
+              ] as { id: TemplateId; label: string; icon: any }[]).map(t => {
+                const active = data.templateId === t.id;
+                const Icon = t.icon;
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => setData(prev => ({ ...prev, templateId: t.id }))}
+                    className={`flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition-all ${active ? 'bg-red-600/20 border-red-600 text-white' : 'bg-white/5 border-white/10 text-white/40 hover:text-white/70'}`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <span className="text-[10px] font-black uppercase tracking-widest">{t.label}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -801,6 +1047,9 @@ export default function App() {
                     <p className="text-base font-black uppercase tracking-widest">Subir foto del piloto</p>
                     <p className="text-[10px] text-white/40 mt-2 flex items-center justify-center gap-2 bg-white/5 px-4 py-1.5 rounded-full">
                       <Sparkles className="w-3 h-3 text-red-500" /> IA: Eliminación de fondo automática
+                    </p>
+                    <p className="text-[10px] text-white/30 mt-3 leading-relaxed max-w-[220px] mx-auto">
+                      Foto de medio cuerpo, centrada y con el fondo lo más neutro posible (igual se elimina automáticamente).
                     </p>
                   </div>
                 </>

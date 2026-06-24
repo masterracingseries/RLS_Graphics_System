@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { google } from "googleapis";
 import { Storage } from "@google-cloud/storage";
 import * as fs from "fs";
+import { verifyToken } from "./auth.js";
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
 const GCS_BUCKET = process.env.GCS_BUCKET || "rls-graphics-uploads";
@@ -49,10 +50,17 @@ Hacelo dinámico y emocionante, acorde al resultado (si fue bueno celebrá, si f
         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
       }
     );
-    if (!response.ok) return "";
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error(`[Gemini] HTTP ${response.status}:`, errText);
+      return "";
+    }
     const data = await response.json();
-    return data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-  } catch {
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    if (!text) console.error("[Gemini] Respuesta vacía:", JSON.stringify(data));
+    return text;
+  } catch (err) {
+    console.error("[Gemini] Error inesperado:", err);
     return "";
   }
 }
@@ -66,7 +74,7 @@ async function appendToSheet(rowData: string[]) {
 
   await sheets.spreadsheets.values.append({
     spreadsheetId: SHEET_ID,
-    range: "Hoja 1!A:M",
+    range: "Hoja 1!A:N",
     valueInputOption: "USER_ENTERED",
     requestBody: { values: [rowData] },
   });
@@ -74,6 +82,11 @@ async function appendToSheet(rowData: string[]) {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+
+  const token = req.headers.authorization?.replace("Bearer ", "");
+  if (!token) return res.status(401).json({ error: "No autorizado" });
+  const { valid, role } = verifyToken(token);
+  if (!valid || (role !== "pilot" && role !== "admin")) return res.status(401).json({ error: "No autorizado" });
 
   try {
     const { imageBase64, pilotData } = req.body;
@@ -104,6 +117,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       imageUrl,
       caption,
       "PENDIENTE",
+      pilotData.template || "protagonista",
     ]);
 
     res.json({ success: true, imageUrl });

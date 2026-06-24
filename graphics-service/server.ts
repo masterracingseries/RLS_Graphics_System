@@ -58,7 +58,7 @@ async function appendToSheet(rowData: string[]) {
 
   await sheets.spreadsheets.values.append({
     spreadsheetId: SHEET_ID,
-    range: "Hoja 1!A:M",
+    range: "Hoja 1!A:N",
     valueInputOption: "USER_ENTERED",
     requestBody: { values: [rowData] },
   });
@@ -70,19 +70,19 @@ async function ensureSheetHeaders() {
 
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId: SHEET_ID,
-    range: "Hoja 1!A1:M1",
+    range: "Hoja 1!A1:N1",
   });
 
   if (!res.data.values || res.data.values.length === 0) {
     await sheets.spreadsheets.values.update({
       spreadsheetId: SHEET_ID,
-      range: "Hoja 1!A1:M1",
+      range: "Hoja 1!A1:N1",
       valueInputOption: "USER_ENTERED",
       requestBody: {
         values: [[
           "Fecha", "Nombre Piloto", "ID Piloto", "Instagram",
           "Liga", "División", "Escudería", "Circuito",
-          "Clasificación", "Carrera", "Imagen", "Caption", "Estado"
+          "Clasificación", "Carrera", "Imagen", "Caption", "Estado", "Template"
         ]],
       },
     });
@@ -129,6 +129,7 @@ async function startServer() {
         imageUrl,
         "",
         "PENDIENTE",
+        pilotData.template || "protagonista",
       ]);
 
       console.log(`📋 Sheet actualizada para ${pilotData.realName}`);
