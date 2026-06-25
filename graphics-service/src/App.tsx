@@ -508,6 +508,8 @@ export default function App({ onSwitchToAdmin, onLogout }: AppProps = {}) {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [caption, setCaption] = useState('');
+  const [isGeneratingCaption, setIsGeneratingCaption] = useState(false);
   const [nicknameScale, setNicknameScale] = useState(1);
 
   useEffect(() => {
@@ -598,6 +600,46 @@ export default function App({ onSwitchToAdmin, onLogout }: AppProps = {}) {
 
   const isMobile = windowWidth < 768;
 
+  const fetchCaption = useCallback(async () => {
+    setIsGeneratingCaption(true);
+    setCaption('');
+    try {
+      const selectedTeamData = F1_TEAMS.find(t => t.id === data.teamId) || F1_TEAMS[0];
+      const selectedCircuit = F1_CIRCUITS.find(c => c.id === data.circuitId);
+      // Si un campo quedó en su valor por defecto, lo mandamos vacío para que
+      // Gemini no use placeholders como "Nombre Piloto" / "Id Piloto" en el texto.
+      const clean = (val: string, def: string) => (val.trim() === def ? '' : val.trim());
+      const res = await fetch('/api/generate-caption', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionStorage.getItem('rls_token') || ''}`,
+        },
+        body: JSON.stringify({
+          pilotData: {
+            realName: clean(data.realName, INITIAL_DATA.realName),
+            nickname: clean(data.nickname, INITIAL_DATA.nickname),
+            instagram: data.instagram,
+            league: data.league,
+            division: data.division,
+            teamName: selectedTeamData.name,
+            circuitName: selectedCircuit ? `${selectedCircuit.name}, ${selectedCircuit.country}` : 'N/A',
+            qualifying: data.qualifying,
+            race: data.race,
+          }
+        }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setCaption(json.caption || '');
+      }
+    } catch {
+      setCaption('');
+    } finally {
+      setIsGeneratingCaption(false);
+    }
+  }, [data]);
+
   // PASO 1: generar la imagen y mostrarla en la vista previa para que el
   // piloto valide antes de enviar.
   const generatePreview = useCallback(async () => {
@@ -609,12 +651,13 @@ export default function App({ onSwitchToAdmin, onLogout }: AppProps = {}) {
       if (!dataUrl || dataUrl === 'data:,') throw new Error('No se pudo generar la imagen');
       setGeneratedImageUrl(dataUrl);
       setShowPreviewModal(true);
+      fetchCaption();
     } catch (err: any) {
       setDownloadError(`Error al generar: ${err.message || 'Error desconocido'}`);
     } finally {
       setIsGenerating(false);
     }
-  }, []);
+  }, [fetchCaption]);
 
   // PASO 2a: enviar la imagen YA generada (la que el piloto está viendo).
   const submitGeneratedImage = useCallback(async () => {
@@ -633,6 +676,7 @@ export default function App({ onSwitchToAdmin, onLogout }: AppProps = {}) {
         },
         body: JSON.stringify({
           imageBase64: generatedImageUrl,
+          caption,
           pilotData: {
             realName: data.realName,
             nickname: data.nickname,
@@ -657,7 +701,7 @@ export default function App({ onSwitchToAdmin, onLogout }: AppProps = {}) {
     } finally {
       setIsSubmitting(false);
     }
-  }, [generatedImageUrl, data]);
+  }, [generatedImageUrl, data, caption]);
 
   // PASO 2b: descargar la imagen ya generada.
   const downloadGeneratedImage = useCallback(() => {
@@ -1276,13 +1320,43 @@ export default function App({ onSwitchToAdmin, onLogout }: AppProps = {}) {
               </button>
             </div>
 
-            {/* Imagen (área scrolleable) */}
-            <div className="flex-1 overflow-y-auto px-5 py-5 flex items-start justify-center">
+            {/* Imagen + caption (área scrolleable) */}
+            <div className="flex-1 overflow-y-auto px-5 py-5 flex flex-col items-center gap-5">
               <img
                 src={generatedImageUrl}
                 alt="Gráfica generada"
                 className="w-full max-w-[360px] h-auto rounded-2xl shadow-2xl border border-white/10"
               />
+              {/* Caption editable */}
+              <div className="w-full max-w-[360px] flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-white/30 flex items-center gap-1.5">
+                    <Sparkles className="w-3 h-3 text-red-500" /> Caption Instagram
+                  </label>
+                  {!isGeneratingCaption && (
+                    <button
+                      onClick={fetchCaption}
+                      className="flex items-center gap-1 text-[10px] text-red-500 font-bold uppercase tracking-widest hover:text-red-400 transition-colors"
+                    >
+                      <RefreshCw className="w-3 h-3" /> Regenerar
+                    </button>
+                  )}
+                </div>
+                {isGeneratingCaption ? (
+                  <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                    <RefreshCw className="w-3 h-3 animate-spin text-red-500 flex-shrink-0" />
+                    <span className="text-[11px] text-white/40">Generando con IA...</span>
+                  </div>
+                ) : (
+                  <textarea
+                    value={caption}
+                    onChange={e => setCaption(e.target.value)}
+                    rows={5}
+                    className="w-full bg-black/30 border border-white/10 rounded-xl p-3 text-xs text-white/80 placeholder-white/20 focus:outline-none focus:border-red-600/50 resize-none transition-colors"
+                    placeholder="Caption generado por IA (podés editarlo antes de enviar)..."
+                  />
+                )}
+              </div>
             </div>
 
             {/* Botones de acción fijos abajo */}

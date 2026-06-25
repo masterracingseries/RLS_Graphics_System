@@ -3,10 +3,13 @@ import { google } from "googleapis";
 import { Storage } from "@google-cloud/storage";
 import * as fs from "fs";
 import { verifyToken } from "./auth.js";
+import { generateCaption } from "./gemini.js";
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
 const GCS_BUCKET = process.env.GCS_BUCKET || "rls-graphics-uploads";
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "";
+
+// Sube imagen a GCS + posible fallback de Gemini; le damos aire (Hobby permite hasta 60s).
+export const maxDuration = 30;
 
 function getCredentials() {
   if (process.env.GOOGLE_CREDENTIALS_JSON) {
@@ -29,40 +32,6 @@ async function uploadToGCS(imageBase64: string, fileName: string): Promise<strin
   });
 
   return `https://storage.googleapis.com/${GCS_BUCKET}/${fileName}`;
-}
-
-async function generateCaption(pilotData: any): Promise<string> {
-  if (!GEMINI_API_KEY) return "";
-  try {
-    const prompt = `Eres el community manager de RLS (Racing Latam Sport), un equipo de F1 simracing.
-Generá un caption para Instagram sobre el resultado de carrera de un piloto.
-Datos: Piloto: ${pilotData.nickname} (${pilotData.realName}), Equipo: ${pilotData.teamName},
-Circuito: ${pilotData.circuitName}, Clasificación: ${pilotData.qualifying}, Carrera: ${pilotData.race}.
-Instagram del piloto: ${pilotData.instagram ? "@" + pilotData.instagram.replace("@", "") : "no disponible"}.
-Escribí en español, máximo 150 palabras, incluí emojis y hashtags relevantes de simracing y F1.
-Hacelo dinámico y emocionante, acorde al resultado (si fue bueno celebrá, si fue malo motivá).`;
-
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=${GEMINI_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
-      }
-    );
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error(`[Gemini] HTTP ${response.status}:`, errText);
-      return "";
-    }
-    const data = await response.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-    if (!text) console.error("[Gemini] Respuesta vacía:", JSON.stringify(data));
-    return text;
-  } catch (err) {
-    console.error("[Gemini] Error inesperado:", err);
-    return "";
-  }
 }
 
 async function appendToSheet(rowData: string[]) {
@@ -89,7 +58,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!valid || (role !== "pilot" && role !== "admin")) return res.status(401).json({ error: "No autorizado" });
 
   try {
-    const { imageBase64, pilotData } = req.body;
+    const { imageBase64, pilotData, caption: providedCaption } = req.body;
 
     if (!imageBase64 || !pilotData) {
       return res.status(400).json({ error: "Faltan datos requeridos" });
@@ -100,7 +69,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const [imageUrl, caption] = await Promise.all([
       uploadToGCS(imageBase64, fileName),
-      generateCaption(pilotData),
+      providedCaption ? Promise.resolve(providedCaption as string) : generateCaption(pilotData),
     ]);
 
     await appendToSheet([
