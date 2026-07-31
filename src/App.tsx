@@ -887,9 +887,11 @@ export default function App({ onSwitchToAdmin, onLogout }: AppProps = {}) {
                         referrerPolicy="no-referrer"
                         crossOrigin={getCrossOrigin(getExportUrl(data.image))}
                       />
+                      {/* Solo el viñeteado lateral: el fundido inferior va a nivel
+                          de la gráfica para que no corte donde termina esta caja. */}
                       <div
                         className="absolute inset-0 pointer-events-none"
-                        style={{ background: 'linear-gradient(to bottom, transparent 30%, #050505 85%), linear-gradient(to right, #050505 0%, transparent 18%, transparent 82%, #050505 100%)' }}
+                        style={{ background: 'linear-gradient(to right, #050505 0%, transparent 18%, transparent 82%, #050505 100%)' }}
                       />
                     </div>
                   ) : (
@@ -898,6 +900,14 @@ export default function App({ onSwitchToAdmin, onLogout }: AppProps = {}) {
                     </div>
                   )}
                 </div>
+
+                {/* Fundido inferior del piloto. Va acá (y no dentro del contenedor
+                    de la foto) porque esa caja termina en ~75% y dejaba un corte
+                    duro justo sobre las stats, donde reaparecían auto y fondo. */}
+                <div
+                  className="absolute inset-0 z-[15] pointer-events-none"
+                  style={{ background: 'linear-gradient(to bottom, transparent 30%, #050505 65%, #050505 80%, rgba(5,5,5,0.75) 100%)' }}
+                />
 
                 {/* Bottom Content Area */}
                 <div className="absolute bottom-0 left-0 w-full p-5 z-20 space-y-3">

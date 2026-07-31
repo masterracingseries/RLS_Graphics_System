@@ -2,10 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "templates-preview",
-      "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "3456", "--directory", "graphics-service"],
-      "port": 3456
+      "name": "rls-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
     }
   ]
 }
