@@ -284,9 +284,9 @@ Con una frecuencia de 3 veces al día consume unas 270 operaciones al mes, dentr
 | `GOOGLE_CREDENTIALS_JSON` | producción | Credencial de la service account, el JSON completo |
 | `GOOGLE_CREDENTIALS_PATH` | local | Ruta al archivo de credenciales (por defecto `./google-credentials.json`) |
 | `GEMINI_API_KEY` | ambos | Genera el caption. Si falta, el caption sale vacío y se escribe a mano |
-| `PILOT_PASSWORD` | producción | Clave compartida entre los pilotos |
-| `ADMIN_PASSWORD` | producción | Clave del administrador |
-| `AUTH_SECRET` | producción | Firma los tokens de sesión. Cambiarla cierra todas las sesiones |
+| `PILOT_PASSWORD` | producción | Clave compartida entre los pilotos. Si falta, el login de pilotos queda deshabilitado |
+| `ADMIN_PASSWORD` | producción | Clave del administrador. Si falta, el login de admin queda deshabilitado |
+| `AUTH_SECRET` | producción | Firma los tokens de sesión. **Obligatoria**: sin ella los endpoints fallan a propósito, para no firmar con un secreto por defecto. Cambiarla cierra todas las sesiones |
 
 ### Endpoints de la API
 
@@ -358,6 +358,8 @@ Si vas a usar tus propios equipos o circuitos, cambia la constante `GITHUB_BASE`
 **La generación es pesada para el celular.** Quitar el fondo carga un modelo de IA completo en el navegador, y además se hacen 3 renders de calentamiento (iOS falla los primeros intentos porque las imágenes todavía no cargaron dentro del SVG). En un teléfono con poca memoria libre y muchas pestañas abiertas, el navegador puede cerrar la pestaña y dejarla en blanco. No es un error del código: conviene cerrar pestañas antes de generar.
 
 **Las imágenes externas pasan por un proxy.** Los assets de GitHub se piden a través de `/api/proxy-image` porque, si no, la captura falla por CORS en los celulares.
+
+Ese proxy solo acepta una lista de dominios permitidos (`ALLOWED_HOSTS` en `api/proxy-image.ts`). Sin esa restricción sería un proxy abierto y cualquiera podría usar tu deploy para descargar contenido ajeno. **Si agregas otro origen de imágenes, tienes que sumarlo a esa lista** o las peticiones devolverán `403`.
 
 **Si el caption sale vacío**, casi siempre es Gemini fallando (límite de uso o timeout). Hay reintentos y el piloto puede volver a generarlo o escribirlo a mano, y el admin puede corregirlo antes de aprobar. Los errores quedan en los logs de Vercel con el prefijo `[Gemini]`.
 
