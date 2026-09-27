@@ -30,7 +30,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SHEET_ID,
-      range: "Hoja 1!A:N",
+      range: "Hoja 1!A:O",
     });
 
     const rows = response.data.values || [];
@@ -50,6 +50,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       caption: row[11] || "",
       estado: row[12] || "",
       template: row[13] || "",
+      publishType: row[14] || "publicacion",
     }));
 
     const status = req.query.status as string;
