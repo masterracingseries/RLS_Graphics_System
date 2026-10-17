@@ -67,7 +67,7 @@ const F1_CIRCUITS: Circuit[] = [
   { id: 'barcelona',   name: 'Barcelona',        city: 'Barcelona',   country: 'España',         background: `${FONDOS_PATH}/barcelona.jpg` },
   { id: 'montreal',    name: 'Montreal',         city: 'Montreal',    country: 'Canadá',         background: '/assets/fondos_f1/montreal.jpg' },
   { id: 'spielberg',   name: 'Red Bull Ring',    city: 'Spielberg',   country: 'Austria',        background: `${FONDOS_PATH}/spielberg.jpg` },
-  { id: 'silverstone', name: 'Silverstone',      city: 'Silverstone', country: 'Gran Bretaña',   background: `${FONDOS_PATH}/silverstone.jpg` },
+  { id: 'silverstone', name: 'Silverstone',      city: 'Silverstone', country: 'Gran Bretaña',   background: `${FONDOS_PATH}/silverstone.JPG` },
   { id: 'spa',         name: 'Spa',              city: 'Spa',         country: 'Bélgica',        background: `${FONDOS_PATH}/spa_fondo.jpg` },
   { id: 'budapest',    name: 'Budapest',         city: 'Budapest',    country: 'Hungría',        background: `${FONDOS_PATH}/budapest.jpg` },
   { id: 'zandvoort',   name: 'Zandvoort',        city: 'Zandvoort',   country: 'Países Bajos',   background: `${FONDOS_PATH}/zandvoort.jpg` },
