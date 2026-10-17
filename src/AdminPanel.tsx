@@ -24,6 +24,8 @@ interface Submission {
   template: string;
   publishType: string;
   imageUrlStory: string;
+  sprintQualifying: string;
+  sprintRace: string;
 }
 
 interface Props {
@@ -195,8 +197,14 @@ export default function AdminPanel({ token, onLogout, onSwitchView }: Props) {
                     )}
                   </div>
                   <div className="text-right">
-                    <p className="text-xs text-white/30">Q: <span className="text-white font-bold">{s.qualifying}</span></p>
-                    <p className="text-xs text-white/30">R: <span className="text-red-500 font-bold">{s.race}</span></p>
+                    {(s.sprintQualifying || s.sprintRace) && (
+                      <>
+                        <p className="text-xs text-white/30">Q Sprint: <span className="text-white font-bold">{s.sprintQualifying || "—"}</span></p>
+                        <p className="text-xs text-white/30">R Sprint: <span className="text-red-500 font-bold">{s.sprintRace || "—"}</span></p>
+                      </>
+                    )}
+                    <p className="text-xs text-white/30">{s.sprintQualifying || s.sprintRace ? "Q Carrera" : "Q"}: <span className="text-white font-bold">{s.qualifying}</span></p>
+                    <p className="text-xs text-white/30">{s.sprintQualifying || s.sprintRace ? "R Carrera" : "R"}: <span className="text-red-500 font-bold">{s.race}</span></p>
                   </div>
                 </div>
 

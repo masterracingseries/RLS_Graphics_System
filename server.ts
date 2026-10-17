@@ -58,7 +58,7 @@ async function appendToSheet(rowData: string[]) {
 
   await sheets.spreadsheets.values.append({
     spreadsheetId: SHEET_ID,
-    range: "Hoja 1!A:N",
+    range: "Hoja 1!A:R",
     valueInputOption: "USER_ENTERED",
     requestBody: { values: [rowData] },
   });
@@ -130,6 +130,10 @@ async function startServer() {
         "",
         "PENDIENTE",
         pilotData.template || "protagonista",
+        "", // columna O: publishType
+        "", // columna P: imageUrlStory (el servidor local no la genera)
+        pilotData.sprintQualifying || "", // columna Q
+        pilotData.sprintRace || "", // columna R
       ]);
 
       console.log(`📋 Sheet actualizada para ${pilotData.realName}`);

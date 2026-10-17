@@ -385,6 +385,11 @@ interface PilotData {
   circuitId: string;
   qualifying: string;
   race: string;
+  // Fin de semana con Sprint (opcional). Si hasSprint es false, las gráficas
+  // se ven exactamente igual que antes y los campos de sprint se ignoran.
+  hasSprint: boolean;
+  sprintQualifying: string;
+  sprintRace: string;
   realName: string;
   nickname: string;
   instagram: string;
@@ -400,6 +405,9 @@ const INITIAL_DATA: PilotData = {
   circuitId: 'spa',
   qualifying: 'P3',
   race: 'P1',
+  hasSprint: false,
+  sprintQualifying: 'P3',
+  sprintRace: 'P2',
   realName: 'Nombre Piloto',
   nickname: 'Id Piloto',
   instagram: '',
@@ -421,6 +429,25 @@ interface TemplateProps {
   team: Team;
   circuit?: Circuit;
 }
+
+// Los 4 resultados de un fin de semana con sprint, en el orden en que se
+// leen en la gráfica: fila de clasificaciones y debajo la fila de carreras
+// (Q Sprint · Q Carrera / R Sprint · R Carrera). Las dos "R" van resaltadas.
+interface ResultTile {
+  key: 'qs' | 'qc' | 'rs' | 'rc';
+  label: string;
+  value: string;
+  isRace: boolean;
+}
+
+const orDash = (v: string) => (v && v.trim() ? v.trim() : '—');
+
+const getSprintTiles = (data: PilotData): ResultTile[] => [
+  { key: 'qs', label: 'Q Sprint',  value: orDash(data.sprintQualifying), isRace: false },
+  { key: 'qc', label: 'Q Carrera', value: orDash(data.qualifying),       isRace: false },
+  { key: 'rs', label: 'R Sprint',  value: orDash(data.sprintRace),       isRace: true  },
+  { key: 'rc', label: 'R Carrera', value: orDash(data.race),             isRace: true  },
+];
 
 // ════════ TEMPLATE 2: BROADCAST (estética TV F1) ════════
 function BroadcastTemplate({ data, team, circuit }: TemplateProps) {
@@ -473,13 +500,29 @@ function BroadcastTemplate({ data, team, circuit }: TemplateProps) {
       {/* Torre de tiempos (resultado) a la izquierda */}
       <div className="absolute top-[100px] left-3 z-30 flex flex-col gap-2" style={{ fontFamily: "'Courier New', monospace" }}>
         <div className="px-3 py-1.5" style={{ backgroundColor: 'rgba(8,8,13,0.74)', borderLeft: `3px solid ${color}` }}>
-          <div className="text-[10px] tracking-[0.3em] uppercase font-bold" style={{ color }}>Finish</div>
-          <div className="text-white font-black leading-[0.85]" style={{ fontSize: '62px' }}>{data.race}</div>
+          <div className="text-[10px] tracking-[0.3em] uppercase font-bold" style={{ color }}>{data.hasSprint ? 'Finish · Carrera' : 'Finish'}</div>
+          <div className="text-white font-black leading-[0.85]" style={{ fontSize: '62px' }}>{orDash(data.race)}</div>
         </div>
-        <div className="px-3 py-1 self-start" style={{ backgroundColor: 'rgba(8,8,13,0.62)', borderLeft: '3px solid rgba(255,255,255,0.3)' }}>
-          <div className="text-[10px] tracking-[0.3em] uppercase text-white/50">Qualifying</div>
-          <div className="text-white font-black leading-none" style={{ fontSize: '26px' }}>{data.qualifying}</div>
-        </div>
+        {data.hasSprint ? (
+          // Tabla de tiempos compacta: sprint + clasificaciones
+          <div className="self-start" style={{ minWidth: '138px', backgroundColor: 'rgba(8,8,13,0.7)', borderLeft: '3px solid rgba(255,255,255,0.3)' }}>
+            {([
+              ['R Sprint', orDash(data.sprintRace), true],
+              ['Q Carrera', orDash(data.qualifying), false],
+              ['Q Sprint', orDash(data.sprintQualifying), false],
+            ] as [string, string, boolean][]).map(([label, value, accent], i) => (
+              <div key={label} className="flex items-center justify-between gap-4 px-3 py-1" style={{ borderTop: i > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none' }}>
+                <span className="text-[10px] tracking-[0.25em] uppercase" style={{ color: accent ? color : 'rgba(255,255,255,0.5)', fontWeight: accent ? 800 : 400 }}>{label}</span>
+                <span className="text-white font-black leading-none" style={{ fontSize: accent ? '22px' : '18px' }}>{value}</span>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="px-3 py-1 self-start" style={{ backgroundColor: 'rgba(8,8,13,0.62)', borderLeft: '3px solid rgba(255,255,255,0.3)' }}>
+            <div className="text-[10px] tracking-[0.3em] uppercase text-white/50">Qualifying</div>
+            <div className="text-white font-black leading-none" style={{ fontSize: '26px' }}>{data.qualifying}</div>
+          </div>
+        )}
       </div>
 
       {/* Barra inferior tipo timing */}
@@ -505,12 +548,19 @@ function CardTemplate({ data, team, circuit }: TemplateProps) {
   const color = team.color;
   const textOnColor = color === '#ffffff' ? '#000000' : '#ffffff';
   const longName = (data.nickname || 'PILOTO').length > 13;
-  const attrs: [string, string][] = [
-    ['Quali', data.qualifying],
-    ['Race', data.race],
-    ['Pista', circuit?.city || '—'],
-    ['Div', data.division.replace(/divisi[oó]n/i, '').trim() || data.division],
-  ];
+  const divText = data.division.replace(/divisi[oó]n/i, '').trim() || data.division;
+  const attrs: [string, string][] = data.hasSprint
+    ? [
+        ...getSprintTiles(data).map(t => [t.label, t.value] as [string, string]),
+        ['Pista', circuit?.city || '—'],
+        ['Div', divText],
+      ]
+    : [
+        ['Quali', data.qualifying],
+        ['Race', data.race],
+        ['Pista', circuit?.city || '—'],
+        ['Div', divText],
+      ];
   return (
     <div className="absolute inset-0 overflow-hidden" style={{ fontFamily: "'Inter', sans-serif", backgroundColor: '#0e0e16', border: `3px solid ${color}` }}>
       {/* Fondo circuito tenue + tinte equipo */}
@@ -592,12 +642,18 @@ function EsportsTemplate({ data, team, circuit }: TemplateProps) {
   // "P1"/"P9" entran cómodos a 78px; resultados más largos (P12, P10, DNF...)
   // se achican para no invadir el espacio de la foto del piloto.
   const raceFontSize = raceText.length <= 2 ? 78 : raceText.length === 3 ? 58 : 46;
-  const stats: [string, string][] = [
-    ['Qualy', data.qualifying],
-    ['Circuito', circuit?.city || '—'],
-    ['Carrera', data.race],
-    ['Division', data.division.replace(/divisi[oó]n/i, '').trim() || data.division],
-  ];
+  const divText = data.division.replace(/divisi[oó]n/i, '').trim() || data.division;
+  // Con sprint la barra muestra los 4 resultados; circuito y división pasan
+  // a una línea fina arriba de la barra (sin sprint queda igual que siempre).
+  const stats: [string, string][] = data.hasSprint
+    ? getSprintTiles(data).map(t => [t.label, t.value] as [string, string])
+    : [
+        ['Qualy', data.qualifying],
+        ['Circuito', circuit?.city || '—'],
+        ['Carrera', data.race],
+        ['Division', divText],
+      ];
+  const sprintTiles = data.hasSprint ? getSprintTiles(data) : [];
   return (
     <div className="absolute inset-0 overflow-hidden" style={{ fontFamily: "'Inter', sans-serif", backgroundColor: '#05070a' }}>
       {/* Fondo circuito */}
@@ -667,13 +723,23 @@ function EsportsTemplate({ data, team, circuit }: TemplateProps) {
       </div>
 
       {/* Barra de estadísticas */}
-      <div className="absolute left-3 right-3 z-20 flex items-stretch justify-between rounded-xl px-2 py-2.5 overflow-hidden" style={{ bottom: '14px', background: 'linear-gradient(180deg, rgba(10,14,20,0.92) 0%, rgba(4,6,10,0.94) 100%)', border: `1px solid ${color}55`, boxShadow: `0 -2px 0 0 ${color} inset, 0 8px 24px rgba(0,0,0,0.5)` }}>
-        {stats.map(([label, value], i) => (
-          <div key={label} className="flex-1 flex flex-col items-center justify-center px-1" style={{ borderLeft: i > 0 ? `1px solid ${color}33` : 'none' }}>
-            <span className="text-[7px] font-bold uppercase tracking-[0.2em] text-white/45">{label}</span>
-            <span className="font-black uppercase leading-none mt-1" style={{ fontSize: value.length > 3 ? '13px' : '18px', color: '#fff', textShadow: `0 0 14px ${color}aa` }}>{value}</span>
+      <div className="absolute left-3 right-3 z-20 rounded-xl overflow-hidden" style={{ bottom: '14px', background: 'linear-gradient(180deg, rgba(10,14,20,0.92) 0%, rgba(4,6,10,0.94) 100%)', border: `1px solid ${color}55`, boxShadow: `0 -2px 0 0 ${color} inset, 0 8px 24px rgba(0,0,0,0.5)` }}>
+        {data.hasSprint && (
+          <div className="text-center text-[7px] font-bold uppercase tracking-[0.3em] text-white/55 pt-1.5 pb-1 truncate px-2" style={{ borderBottom: `1px solid ${color}33` }}>
+            {circuit?.city || '—'} · Div {divText}
           </div>
-        ))}
+        )}
+        <div className="flex items-stretch justify-between px-2 py-2.5">
+          {stats.map(([label, value], i) => {
+            const isRace = data.hasSprint && sprintTiles[i]?.isRace;
+            return (
+              <div key={label} className="flex-1 flex flex-col items-center justify-center px-1" style={{ borderLeft: i > 0 ? `1px solid ${color}33` : 'none' }}>
+                <span className="text-[7px] font-bold uppercase tracking-[0.2em]" style={{ color: isRace ? color : 'rgba(255,255,255,0.45)' }}>{label}</span>
+                <span className="font-black uppercase leading-none mt-1" style={{ fontSize: value.length > 3 ? '13px' : '18px', color: '#fff', textShadow: `0 0 14px ${color}aa` }}>{value}</span>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -812,6 +878,8 @@ export default function App({ onSwitchToAdmin, onLogout }: AppProps = {}) {
             circuitName: selectedCircuit ? `${selectedCircuit.name}, ${selectedCircuit.country}` : 'N/A',
             qualifying: data.qualifying,
             race: data.race,
+            sprintQualifying: data.hasSprint ? data.sprintQualifying : '',
+            sprintRace: data.hasSprint ? data.sprintRace : '',
           }
         }),
       });
@@ -889,6 +957,9 @@ export default function App({ onSwitchToAdmin, onLogout }: AppProps = {}) {
             circuitName: selectedCircuit ? `${selectedCircuit.name}, ${selectedCircuit.country}` : 'N/A',
             qualifying: data.qualifying,
             race: data.race,
+            // Vacíos si el fin de semana no tuvo sprint
+            sprintQualifying: data.hasSprint ? data.sprintQualifying : '',
+            sprintRace: data.hasSprint ? data.sprintRace : '',
             template: data.templateId,
           }
         })
@@ -1162,16 +1233,33 @@ export default function App({ onSwitchToAdmin, onLogout }: AppProps = {}) {
                   </div>
 
                   {/* Stats Grid */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-white/15 backdrop-blur-md border-l-2 border-red-600 p-2">
-                      <span className="text-[8px] font-bold text-white/40 uppercase tracking-widest block mb-0.5">Qualifying</span>
-                      <span className="text-xl font-black italic tracking-tighter text-white">{data.qualifying}</span>
+                  {data.hasSprint ? (
+                    // Fin de semana con sprint: 2x2 (clasificaciones arriba, carreras abajo)
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+                      {getSprintTiles(data).map(t => (
+                        <div
+                          key={t.key}
+                          className={t.isRace
+                            ? 'bg-red-600 px-2.5 py-1.5 flex items-center justify-between'
+                            : 'bg-white/15 backdrop-blur-md border-l-2 border-red-600 px-2.5 py-1.5 flex items-center justify-between'}
+                        >
+                          <span className={`text-[8px] font-bold uppercase tracking-widest ${t.isRace ? 'text-white/80' : 'text-white/40'}`}>{t.label}</span>
+                          <span className="text-lg font-black italic tracking-tighter text-white leading-none">{t.value}</span>
+                        </div>
+                      ))}
                     </div>
-                    <div className="bg-red-600 p-2">
-                      <span className="text-[8px] font-bold text-white/80 uppercase tracking-widest block mb-0.5">Race Result</span>
-                      <span className="text-xl font-black italic tracking-tighter text-white">{data.race}</span>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-white/15 backdrop-blur-md border-l-2 border-red-600 p-2">
+                        <span className="text-[8px] font-bold text-white/40 uppercase tracking-widest block mb-0.5">Qualifying</span>
+                        <span className="text-xl font-black italic tracking-tighter text-white">{data.qualifying}</span>
+                      </div>
+                      <div className="bg-red-600 p-2">
+                        <span className="text-[8px] font-bold text-white/80 uppercase tracking-widest block mb-0.5">Race Result</span>
+                        <span className="text-xl font-black italic tracking-tighter text-white">{data.race}</span>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Footer Info */}
                   <div className="flex justify-between items-end pt-2 border-t border-white/10">
@@ -1398,9 +1486,59 @@ export default function App({ onSwitchToAdmin, onLogout }: AppProps = {}) {
                   <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40 pointer-events-none" />
                 </div>
               </div>
+              {/* Interruptor: fin de semana con Sprint */}
+              <button
+                type="button"
+                role="switch"
+                aria-checked={data.hasSprint}
+                onClick={() => setData(prev => ({ ...prev, hasSprint: !prev.hasSprint }))}
+                className={`w-full flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 text-left transition-all ${
+                  data.hasSprint ? 'bg-red-600/15 border-red-600/50' : 'bg-black/60 border-white/10 hover:border-white/25'
+                }`}
+              >
+                <span className="flex flex-col gap-0.5">
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/70">Fin de semana con Sprint</span>
+                  <span className="text-[10px] text-white/35">Agrega clasificación y resultado del sprint a la gráfica</span>
+                </span>
+                <span className={`relative w-11 h-6 rounded-full flex-shrink-0 transition-colors ${data.hasSprint ? 'bg-red-600' : 'bg-white/15'}`}>
+                  <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform ${data.hasSprint ? 'translate-x-5' : ''}`} />
+                </span>
+              </button>
+
+              {data.hasSprint && (
+                <>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 flex items-center gap-2 ml-1">
+                      <Hash className="w-3.5 h-3.5 text-red-500" /> Clasificación Sprint
+                    </label>
+                    <input
+                      type="text"
+                      name="sprintQualifying"
+                      value={data.sprintQualifying}
+                      onChange={handleInputChange}
+                      className="w-full bg-black/60 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:outline-none focus:border-red-500 focus:ring-4 focus:ring-red-600/10 transition-all"
+                      placeholder="Ej: P3"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 flex items-center gap-2 ml-1">
+                      <Trophy className="w-3.5 h-3.5 text-red-500" /> Resultado Sprint
+                    </label>
+                    <input
+                      type="text"
+                      name="sprintRace"
+                      value={data.sprintRace}
+                      onChange={handleInputChange}
+                      className="w-full bg-black/60 border border-white/10 rounded-2xl px-6 py-4 text-sm font-bold focus:outline-none focus:border-red-500 focus:ring-4 focus:ring-red-600/10 transition-all"
+                      placeholder="Ej: P1"
+                    />
+                  </div>
+                </>
+              )}
+
               <div className="space-y-3">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 flex items-center gap-2 ml-1">
-                  <Hash className="w-3.5 h-3.5 text-red-500" /> Clasificación
+                  <Hash className="w-3.5 h-3.5 text-red-500" /> {data.hasSprint ? 'Clasificación Carrera' : 'Clasificación'}
                 </label>
                 <input
                   type="text"
@@ -1413,7 +1551,7 @@ export default function App({ onSwitchToAdmin, onLogout }: AppProps = {}) {
               </div>
               <div className="space-y-3">
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 flex items-center gap-2 ml-1">
-                  <Trophy className="w-3.5 h-3.5 text-red-500" /> Carrera
+                  <Trophy className="w-3.5 h-3.5 text-red-500" /> {data.hasSprint ? 'Resultado Carrera' : 'Carrera'}
                 </label>
                 <input
                   type="text"
